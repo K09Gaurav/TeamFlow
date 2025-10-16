@@ -27,14 +27,46 @@ Spring Boot | Spring Security | JPA/Hibernate | PostgreSQL | Docker | Lombok | S
 
 ## 🧠 Entities & Relationships
 
-User ↔ Role: many-to-many
+![TeamFlow_Schema](SupportingFiles/TeamFlow_Schema.png)
+```
+Table Users {
+  id integer [primary key]
+  name varchar
+  email varchar [unique]
+  password varchar
+  role enum('ADMIN', 'MANAGER', 'LEAD', 'MEMBER')
+  created_at timestamp
+}
 
-User ↔ Project: many-to-many
+Table Projects {
+  id integer [primary key]
+  title varchar
+  description text
+  status enum('ACTIVE', 'ARCHIVED')
+  created_at timestamp
+  created_by integer [ref: > Users.id]
+}
 
-Project ↔ Task: one-to-many
+Table ProjectMembers {
+  id integer [primary key]
+  project_id integer [ref: > Projects.id]
+  user_id integer [ref: > Users.id]
+  role_in_project varchar
+  joined_at timestamp
+}
 
-Task ↔ User: many-to-one
-
+Table Tasks {
+  id integer [primary key]
+  project_id integer [ref: > Projects.id]
+  assigned_to integer [ref: > Users.id]
+  title varchar
+  description text
+  priority enum('LOW', 'MEDIUM', 'HIGH')
+  status enum('TODO', 'IN_PROGRESS', 'DONE')
+  created_at timestamp
+  updated_at timestamp
+}
+```
 ## Setup
 
 - Clone repository
